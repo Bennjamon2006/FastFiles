@@ -1,6 +1,38 @@
+import { Server } from "node:http";
 import app from "./app/server";
-import { connectRedis } from "./config/redis";
+import { connectRedis, disconnectRedis } from "./config/redis";
 import serverConfig from "./config/server";
+
+let server: Server | null = null;
+
+const closeServer = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (server && server.listening) {
+      server.close((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          console.log("Server closed successfully.");
+          resolve();
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
+};
+
+const exit = async (code: number = 0) => {
+  try {
+    await disconnectRedis();
+    await closeServer();
+
+    process.exit(code);
+  } catch (error) {
+    console.error("Error during shutdown:", error);
+    process.exit(1);
+  }
+};
 
 async function startServer() {
   try {
@@ -8,28 +40,35 @@ async function startServer() {
 
     const { port, host } = serverConfig;
 
-    app.listen(port, host, () => {
+    server = app.listen(port, host, () => {
       console.log(`Server is running at http://${host}:${port}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
-    process.exit(1);
+    exit(1);
   }
 }
 
 startServer();
 
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  process.exit(1);
-});
-
-process.on("uncaughtException", (error) => {
-  console.error("Uncaught Exception:", error);
-  process.exit(1);
-});
-
+// Handle graceful shutdown
 process.on("SIGINT", () => {
   console.log("Received SIGINT. Shutting down gracefully...");
-  process.exit(0);
+  exit();
+});
+
+process.on("SIGTERM", () => {
+  console.log("Received SIGTERM. Shutting down gracefully...");
+  exit();
+});
+
+// Handle uncaught exceptions and unhandled promise rejections
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  exit(1);
 });
