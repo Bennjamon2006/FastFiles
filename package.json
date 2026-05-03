@@ -6,7 +6,9 @@
   "author": "Benjamin Rivas <benjaminrivas500@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build --workspace domain",
+    "build": "npm run build --workspace domain && npm run build --workspace server",
+    "dev": "npm run dev --workspace server",
+    "start": "npm run start --workspace server",
     "commit": "npx cz"
   },
   "workspaces": [

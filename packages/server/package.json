@@ -1,0 +1,25 @@
+{
+  "version": "0.0.0",
+  "private": true,
+  "description": "Backend server for the FastFiles application.",
+  "author": "Benjamin Rivas <benjaminrivas500@gmail.com>",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.17",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
