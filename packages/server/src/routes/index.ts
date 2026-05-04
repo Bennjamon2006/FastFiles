@@ -1,8 +1,8 @@
-import { Router } from "express";
-import roomsRouter from "./rooms.routes";
+import { ExpressAdapter } from "@/adapters/ExpressAdapter";
+import roomsRoutes from "@/routes/rooms.routes";
 
-const router = Router();
+const expressAdapter = new ExpressAdapter();
 
-router.use("/rooms", roomsRouter);
+expressAdapter.registerController("/rooms", roomsRoutes);
 
-export default router;
+export default expressAdapter.create();

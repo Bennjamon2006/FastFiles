@@ -1,34 +1,28 @@
-import type {
-  Request as ExpressRequest,
-  Response as ExpressResponse,
-  NextFunction,
-  RequestHandler,
-  Router,
-} from "express";
-import Request from "./Request";
-import Response from "./Response";
-import Middleware from "./Middleware";
+import type Middleware from "./Middleware";
+import type { HttpHandler } from "./HttpHandler";
+import type { HttpMethod, RouteDefinition } from "./RouteDefinition";
 
-type HttpMethod = "get" | "post" | "put" | "delete" | "patch";
-
-type Handler = (request: Request) => Response | Promise<Response>;
-
-interface RouteDefinition {
-  path: string;
-  method: HttpMethod;
-  handler: Handler;
-  middlewares: Middleware[];
-}
-
-type Params = [...Middleware[], Handler];
+type Params = [...Middleware[], HttpHandler];
 
 export default abstract class Controller {
   private routes: RouteDefinition[] = [];
 
   private registerRoute(method: HttpMethod, path: string, ...params: Params) {
-    const handler = params.pop() as Handler;
-    const middlewares = params as Middleware[];
-    this.routes.push({ method, path, handler, middlewares });
+    const handler = params[params.length - 1] as HttpHandler;
+    const middlewares = params.slice(0, -1) as Middleware[];
+
+    if (typeof handler !== "function") {
+      throw new Error(
+        `Invalid handler for route ${method} ${path}. Expected a function.`,
+      );
+    }
+
+    this.routes.push({
+      method,
+      path,
+      handler,
+      middlewares,
+    });
   }
 
   protected get(path: string, ...params: Params) {
@@ -51,47 +45,7 @@ export default abstract class Controller {
     this.registerRoute("patch", path, ...params);
   }
 
-  private wrapHandler(
-    handler: Handler,
-    middlewares: Middleware[],
-  ): RequestHandler {
-    return async (
-      req: ExpressRequest,
-      res: ExpressResponse,
-      next: NextFunction,
-    ) => {
-      try {
-        const request = new Request(
-          req.body,
-          req.query,
-          req.params,
-          req.headers,
-          req.method,
-          req.url,
-          req.ip,
-        );
-
-        for (const middleware of middlewares) {
-          const result = await middleware.handle(request);
-
-          if (result instanceof Response) {
-            res.status(result.status).set(result.headers).json(result.body);
-            return;
-          }
-        }
-
-        const response = await handler(request);
-        res.status(response.status).set(response.headers).json(response.body);
-      } catch (error) {
-        next(error);
-      }
-    };
-  }
-
-  public loadRoutes(router: Router) {
-    for (const route of this.routes) {
-      const { method, path, handler, middlewares } = route;
-      router[method](path, this.wrapHandler(handler, middlewares));
-    }
+  public getRoutes() {
+    return this.routes;
   }
 }
