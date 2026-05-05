@@ -1,8 +1,14 @@
-import express from "express";
-import router from "@/routes";
+import registerRoutes from "@/routes";
+import ExpressAdapter from "@/adapters/express/ExpressAdapter";
+import ExpressServer from "@/adapters/express/ExpressServer";
+import { IServer } from "@/core/http/Server";
 
-const app = express();
+export default function createServer(): IServer {
+  const adapter = new ExpressAdapter();
 
-app.use("/api", router);
+  registerRoutes(adapter);
 
-export default app;
+  const server = new ExpressServer(adapter);
+
+  return server;
+}

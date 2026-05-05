@@ -1,31 +1,13 @@
-import { Server } from "node:http";
-import app from "./app/server";
 import { connectRedis, disconnectRedis } from "./config/redis";
 import serverConfig from "./config/server";
+import createServer from "./app/server";
 
-let server: Server | null = null;
-
-const closeServer = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (server && server.listening) {
-      server.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          console.log("Server closed successfully.");
-          resolve();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
-};
+const server = createServer();
 
 const exit = async (code: number = 0) => {
   try {
     await disconnectRedis();
-    await closeServer();
+    await server.stop();
 
     process.exit(code);
   } catch (error) {
@@ -40,9 +22,9 @@ async function startServer() {
 
     const { port, host } = serverConfig;
 
-    server = app.listen(port, host, () => {
-      console.log(`Server is running at http://${host}:${port}`);
-    });
+    await server.start(port, host);
+
+    console.log(`Server is running at http://${host}:${port}`);
   } catch (error) {
     console.error("Failed to start server:", error);
     exit(1);

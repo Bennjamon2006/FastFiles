@@ -1,8 +1,6 @@
-import { ExpressAdapter } from "@/adapters/ExpressAdapter";
+import type { HttpAdapter } from "@/core/http/HttpAdapter";
 import roomsRoutes from "@/routes/rooms.routes";
 
-const expressAdapter = new ExpressAdapter();
-
-expressAdapter.registerController("/rooms", roomsRoutes);
-
-export default expressAdapter.create();
+export default function registerRoutes(adapter: HttpAdapter<unknown>): void {
+  adapter.registerController("/rooms", roomsRoutes);
+}

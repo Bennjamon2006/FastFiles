@@ -3,8 +3,9 @@ import type {
   Response as ExpressResponse,
   NextFunction,
   RequestHandler,
+  Application,
 } from "express";
-import { Router } from "express";
+import express, { Router } from "express";
 
 import type { HttpAdapter } from "@/core/http/HttpAdapter";
 import Request from "@/core/http/Request";
@@ -17,7 +18,7 @@ type ControllerDefinition = {
   controller: Controller;
 };
 
-export class ExpressAdapter implements HttpAdapter<Router> {
+export default class ExpressAdapter implements HttpAdapter<Application> {
   private controllers: ControllerDefinition[] = [];
 
   public registerController(path: string, controller: Controller): void {
@@ -80,14 +81,14 @@ export class ExpressAdapter implements HttpAdapter<Router> {
     return router;
   }
 
-  create(): Router {
-    const router = Router();
+  create(): Application {
+    const app = express();
 
     for (const { path, controller } of this.controllers) {
       const controllerRouter = this.createRouter(controller);
-      router.use(path, controllerRouter);
+      app.use(path, controllerRouter);
     }
 
-    return router;
+    return app;
   }
 }
