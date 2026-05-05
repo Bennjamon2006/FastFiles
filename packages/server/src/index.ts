@@ -1,13 +1,13 @@
-import { connectRedis, disconnectRedis } from "./config/redis";
 import serverConfig from "./config/server";
 import createServer from "./app/server";
+import { startDependencies, stopDependencies } from "./app/dependencies";
 
 const server = createServer();
 
 const exit = async (code: number = 0) => {
   try {
-    await disconnectRedis();
     await server.stop();
+    await stopDependencies();
 
     process.exit(code);
   } catch (error) {
@@ -18,8 +18,7 @@ const exit = async (code: number = 0) => {
 
 async function startServer() {
   try {
-    await connectRedis();
-
+    await startDependencies();
     const { port, host } = serverConfig;
 
     await server.start(port, host);
