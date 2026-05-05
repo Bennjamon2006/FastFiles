@@ -7,11 +7,9 @@ import type {
 } from "express";
 import express, { Router } from "express";
 
-import type { HttpAdapter } from "@/core/http/HttpAdapter";
-import Request from "@/core/http/Request";
-import Response from "@/core/http/Response";
-import type { RouteDefinition } from "@/core/http/RouteDefinition";
-import Controller from "@/core/http/Controller";
+import { Request, Response } from "@/core/http/model";
+import type { RouteDefinition, Controller } from "@/core/http/routing";
+import type { HttpAdapter } from "@/core/http/server";
 
 type ControllerDefinition = {
   path: string;

@@ -1,5 +1,5 @@
-import Controller from "@/core/http/Controller";
-import Response from "@/core/http/Response";
+import { Controller } from "@/core/http/routing";
+import { Response } from "@/core/http/model";
 
 export default class RoomsController extends Controller {
   constructor() {
@@ -9,7 +9,7 @@ export default class RoomsController extends Controller {
   }
 
   public async getRooms() {
-    return new Response(200, {
+    return Response.ok({
       rooms: [],
       message: "Rooms from controller",
     });

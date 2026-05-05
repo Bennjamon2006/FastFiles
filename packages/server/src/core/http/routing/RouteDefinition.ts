@@ -1,8 +1,6 @@
-import { HttpHandler } from "./HttpHandler";
-import Middleware from "./Middleware";
+import type { Middleware, HttpHandler } from ".";
 
 export type HttpMethod = "get" | "post" | "put" | "delete" | "patch";
-
 
 export interface RouteDefinition {
   path: string;

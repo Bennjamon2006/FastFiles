@@ -1,10 +1,10 @@
-import type Middleware from "./Middleware";
-import type { HttpHandler } from "./HttpHandler";
-import type { HttpMethod, RouteDefinition } from "./RouteDefinition";
+import type { Middleware } from ".";
+import type { HttpHandler } from ".";
+import type { HttpMethod, RouteDefinition } from ".";
 
 type Params = [...Middleware[], HttpHandler];
 
-export default abstract class Controller {
+export abstract class Controller {
   private routes: RouteDefinition[] = [];
 
   private registerRoute(method: HttpMethod, path: string, ...params: Params) {

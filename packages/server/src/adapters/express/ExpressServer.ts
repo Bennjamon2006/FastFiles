@@ -1,5 +1,5 @@
 import type { Application } from "express";
-import HttpServer from "@/core/http/HttpServer";
+import { HttpServer } from "@/core/http/server";
 import { Server } from "node:http";
 
 export default class ExpressServer extends HttpServer<Application> {

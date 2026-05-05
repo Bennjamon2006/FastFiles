@@ -1,7 +1,7 @@
 import registerRoutes from "@/routes";
 import ExpressAdapter from "@/adapters/express/ExpressAdapter";
 import ExpressServer from "@/adapters/express/ExpressServer";
-import { IServer } from "@/core/http/Server";
+import { IServer } from "@/core/http/server";
 
 export default function createServer(): IServer {
   const adapter = new ExpressAdapter();
