@@ -1,6 +1,6 @@
 import type { RedisClientType } from "redis";
 import { createClient } from "redis";
-import { LifeCycle } from "@/runtime/lifeycle";
+import { LifeCycle } from "@/runtime/lifecycle";
 
 export class RedisConnectionProvider implements LifeCycle {
   private client: RedisClientType | null = null;

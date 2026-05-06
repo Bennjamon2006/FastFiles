@@ -1,6 +1,6 @@
 import type { RedisClientType } from "redis";
 import createRedisProvider from "@/config/redis";
-import { LifeCycleManager } from "@/runtime/lifeycle";
+import { LifeCycleManager } from "@/runtime/lifecycle";
 import { Container } from "@/runtime/dependency-injection";
 import Application from "./Application";
 import ExpressAdapter from "@/adapters/express/ExpressAdapter";
