@@ -1,17 +1,14 @@
 import Application from "./app/Application";
-import ExpressServer from "./adapters/express/ExpressServer";
-import ExpressAdapter from "./adapters/express/ExpressAdapter";
 import serverConfig from "./config/server";
+import { Composer } from "./app/Composer";
 
 const app = new Application();
-const adapter = new ExpressAdapter();
-const server = new ExpressServer(adapter);
-
-app.configure(server, adapter);
+const composer = new Composer();
 
 const exit = async (code: number = 0) => {
   try {
     await app.stop();
+    await composer.stop();
 
     process.exit(code);
   } catch (error) {
@@ -22,8 +19,11 @@ const exit = async (code: number = 0) => {
 
 async function startServer() {
   try {
+    composer.compose(app);
+
     const { port, host } = serverConfig;
 
+    await composer.start();
     await app.start(port, host);
 
     console.log(`Server is running at http://${host}:${port}`);

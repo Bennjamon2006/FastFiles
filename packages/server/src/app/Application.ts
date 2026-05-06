@@ -1,5 +1,4 @@
 import { HttpServer, HttpAdapter } from "@/core/http/server";
-import registerRoutes from "@/routes";
 
 export default class Application {
   private server?: HttpServer<unknown>;
@@ -12,8 +11,6 @@ export default class Application {
 
     this.server = server;
     this.adapter = adapter;
-
-    registerRoutes(this.adapter);
   }
 
   public async start(port: number, host: string): Promise<void> {

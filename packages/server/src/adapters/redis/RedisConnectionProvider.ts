@@ -41,7 +41,7 @@ export class RedisConnectionProvider implements LifeCycle {
     }
   }
 
-  public get(): RedisClientType {
+  public getClient(): RedisClientType {
     if (this.client === null || !this.client.isOpen) {
       throw new Error("Redis client is not connected");
     }
