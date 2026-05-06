@@ -1,13 +1,17 @@
+import Application from "./app/Application";
+import ExpressServer from "./adapters/express/ExpressServer";
+import ExpressAdapter from "./adapters/express/ExpressAdapter";
 import serverConfig from "./config/server";
-import createServer from "./app/server";
-import { startDependencies, stopDependencies } from "./app/dependencies";
 
-const server = createServer();
+const app = new Application();
+const adapter = new ExpressAdapter();
+const server = new ExpressServer(adapter);
+
+app.configure(server, adapter);
 
 const exit = async (code: number = 0) => {
   try {
-    await server.stop();
-    await stopDependencies();
+    await app.stop();
 
     process.exit(code);
   } catch (error) {
@@ -18,10 +22,9 @@ const exit = async (code: number = 0) => {
 
 async function startServer() {
   try {
-    await startDependencies();
     const { port, host } = serverConfig;
 
-    await server.start(port, host);
+    await app.start(port, host);
 
     console.log(`Server is running at http://${host}:${port}`);
   } catch (error) {

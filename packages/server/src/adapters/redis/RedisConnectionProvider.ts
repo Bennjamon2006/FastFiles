@@ -1,8 +1,8 @@
 import type { RedisClientType } from "redis";
 import { createClient } from "redis";
-import { LifeCycleDependency } from "@/dependency-injection";
+import { LifeCycle } from "@/runtime/lifeycle";
 
-export class RedisConnectionProvider implements LifeCycleDependency<RedisClientType> {
+export class RedisConnectionProvider implements LifeCycle {
   private client: RedisClientType | null = null;
 
   constructor(private readonly url: string) {}
