@@ -5,15 +5,12 @@ import { Container } from "@/runtime/dependency-injection";
 import Application from "./Application";
 import ExpressAdapter from "@/infrastructure/express/ExpressAdapter";
 import ExpressServer from "@/infrastructure/express/ExpressServer";
-import RoomsController from "@/transport/http/RoomsController";
 import { RedisConnectionProvider } from "@/infrastructure/redis/RedisConnectionProvider";
-
-interface ApplicationContext {
-  redisClient: RedisClientType;
-}
-
+import { ApplicationDependencies } from "./ApplicationDependencies";
+import { modules } from "@/modules";
+import { HttpAdapter } from "@/core/http/server";
 export class Composer {
-  private readonly container: Container<ApplicationContext>;
+  private readonly container: Container<ApplicationDependencies>;
   private readonly lifecycleManager: LifeCycleManager;
   private started: boolean = false;
   private initialized: boolean = false;
@@ -37,6 +34,20 @@ export class Composer {
       [],
     );
   }
+
+  private loadModules(adapter: HttpAdapter<unknown>): void {
+    for (const ModuleClass of modules) {
+      const moduleInstance = new ModuleClass();
+
+      moduleInstance.register({
+        adapter,
+        container: this.container,
+      });
+
+      console.log(`Module ${ModuleClass.name} registered successfully.`);
+    }
+  }
+
   public compose(app: Application): void {
     if (this.initialized) return;
 
@@ -45,9 +56,7 @@ export class Composer {
     const adapter = new ExpressAdapter();
     const server = new ExpressServer(adapter);
 
-    const roomsController = new RoomsController();
-
-    adapter.registerController("/api/rooms", roomsController);
+    this.loadModules(adapter);
 
     app.configure(server, adapter);
 
