@@ -1,11 +1,12 @@
 import type { RedisClientType } from "redis";
-import createRedisProvider from "@/config/redis";
+import redisConfig from "@/config/redis";
 import { LifeCycleManager } from "@/runtime/lifecycle";
 import { Container } from "@/runtime/dependency-injection";
 import Application from "./Application";
-import ExpressAdapter from "@/adapters/express/ExpressAdapter";
-import ExpressServer from "@/adapters/express/ExpressServer";
+import ExpressAdapter from "@/infrastructure/express/ExpressAdapter";
+import ExpressServer from "@/infrastructure/express/ExpressServer";
 import RoomsController from "@/transport/http/RoomsController";
+import { RedisConnectionProvider } from "@/infrastructure/redis/RedisConnectionProvider";
 
 interface ApplicationContext {
   redisClient: RedisClientType;
@@ -23,7 +24,7 @@ export class Composer {
   }
 
   private createContext(): void {
-    const redisProvider = createRedisProvider();
+    const redisProvider = new RedisConnectionProvider(redisConfig.url);
 
     this.lifecycleManager.register(redisProvider);
 
