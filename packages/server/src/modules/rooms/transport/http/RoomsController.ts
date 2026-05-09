@@ -7,11 +7,27 @@ export class RoomsController extends Controller {
     super();
 
     this.post("/", this.createRoom.bind(this));
+    this.get("/:code", this.getRoomByCode.bind(this));
   }
 
   public async createRoom(request: Request) {
     const { duration } = request.body as { duration: number };
     const room = await this.roomsService.createRoom(duration);
+
+    return Response.ok({
+      room,
+    });
+  }
+
+  public async getRoomByCode(request: Request) {
+    const { code } = request.params as { code: string };
+    const room = await this.roomsService.getRoomByCode(code);
+
+    if (!room) {
+      return new Response(404, {
+        error: "Room not found",
+      });
+    }
 
     return Response.ok({
       room,

@@ -36,4 +36,8 @@ export class RoomsService {
       expiresAt,
     };
   }
+
+  public async getRoomByCode(code: string): Promise<Room | null> {
+    return this.roomsRepository.getRoomByCode(code);
+  }
 }
