@@ -13,7 +13,7 @@ export class RedisRoomsRepository implements RoomsRepository {
     return `room:${code}`;
   }
 
-  private safeParse(json: string | null): Room | null {
+  private safeParse(json: string | null, code: string): Room | null {
     if (!json) {
       return null;
     }
@@ -21,7 +21,11 @@ export class RedisRoomsRepository implements RoomsRepository {
     try {
       return JSON.parse(json) as Room;
     } catch (e) {
-      this.logger.error("Invalid JSON in Redis for room", { error: e });
+      this.logger.error("Invalid JSON in Redis for room", {
+        error: e,
+        raw: json,
+        roomCode: code,
+      });
 
       return null;
     }
@@ -42,6 +46,6 @@ export class RedisRoomsRepository implements RoomsRepository {
     const key = this.getKey(code);
     const result = await this.redisClient.get(key);
 
-    return this.safeParse(result);
+    return this.safeParse(result, code);
   }
 }
