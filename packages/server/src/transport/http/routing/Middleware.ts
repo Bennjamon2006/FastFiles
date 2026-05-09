@@ -1,4 +1,4 @@
-import type { Request, Response } from "@/core/http/model";
+import type { Request, Response } from "@/transport/http/model";
 
 type Result = Response | void;
 

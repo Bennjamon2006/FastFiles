@@ -1,5 +1,5 @@
 import type { Server } from "node:http";
-import type { HttpAdapter } from "@/core/http/server";
+import type { HttpAdapter } from "@/transport/http/server";
 import type { IServer } from "./Server";
 
 export abstract class HttpServer<T> implements IServer {

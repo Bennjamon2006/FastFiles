@@ -1,4 +1,4 @@
-import { HttpServer, HttpAdapter } from "@/core/http/server";
+import { HttpServer, HttpAdapter } from "@/transport/http/server";
 
 export default class Application {
   private server?: HttpServer<unknown>;

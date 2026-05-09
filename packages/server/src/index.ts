@@ -19,11 +19,10 @@ const exit = async (code: number = 0) => {
 
 async function startServer() {
   try {
-    composer.compose(app);
-
     const { port, host } = serverConfig;
 
     await composer.start();
+    composer.compose(app);
     await app.start(port, host);
 
     console.log(`Server is running at http://${host}:${port}`);

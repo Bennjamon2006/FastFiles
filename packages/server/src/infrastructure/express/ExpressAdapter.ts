@@ -5,11 +5,11 @@ import type {
   RequestHandler,
   Application,
 } from "express";
-import express, { Router } from "express";
+import express, { Router, json, urlencoded } from "express";
 
-import { Request, Response } from "@/core/http/model";
-import type { RouteDefinition, Controller } from "@/core/http/routing";
-import type { HttpAdapter } from "@/core/http/server";
+import { Request, Response } from "@/transport/http/model";
+import type { RouteDefinition, Controller } from "@/transport/http/routing";
+import type { HttpAdapter } from "@/transport/http/server";
 
 type ControllerDefinition = {
   path: string;
@@ -81,6 +81,8 @@ export default class ExpressAdapter implements HttpAdapter<Application> {
 
   create(): Application {
     const app = express();
+    app.use(json());
+    app.use(urlencoded({ extended: true }));
 
     for (const { path, controller } of this.controllers) {
       const controllerRouter = this.createRouter(controller);

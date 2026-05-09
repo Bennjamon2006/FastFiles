@@ -8,7 +8,7 @@ import ExpressServer from "@/infrastructure/express/ExpressServer";
 import { RedisConnectionProvider } from "@/infrastructure/redis/RedisConnectionProvider";
 import { ApplicationDependencies } from "./ApplicationDependencies";
 import { modules } from "@/modules";
-import { HttpAdapter } from "@/core/http/server";
+import { HttpAdapter } from "@/transport/http/server";
 export class Composer {
   private readonly container: Container<ApplicationDependencies>;
   private readonly lifecycleManager: LifeCycleManager;
@@ -33,6 +33,8 @@ export class Composer {
       },
       [],
     );
+
+    console.log("Context created successfully.");
   }
 
   private loadModules(adapter: HttpAdapter<unknown>): void {
@@ -51,8 +53,6 @@ export class Composer {
   public compose(app: Application): void {
     if (this.initialized) return;
 
-    this.createContext();
-
     const adapter = new ExpressAdapter();
     const server = new ExpressServer(adapter);
 
@@ -70,7 +70,11 @@ export class Composer {
     }
 
     try {
+      this.createContext();
+
       await this.lifecycleManager.start();
+      await this.container.start();
+
       this.started = true;
     } catch (error) {
       console.error("Failed to start composer:", error);
