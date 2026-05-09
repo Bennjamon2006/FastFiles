@@ -6,8 +6,15 @@ import { RedisRoomsRepository } from "./infrastructure/redis/RedisRoomsRepositor
 export default class RoomsModule implements Module {
   public register(context: ModuleContext) {
     const redisClient = context.container.get("redisClient");
+    const loggerFactory = context.container.get("loggerFactory");
+    const logger = loggerFactory.create({
+      module: "RoomsModule",
+    });
 
-    const roomsRepository = new RedisRoomsRepository(redisClient);
+    const roomsRepository = new RedisRoomsRepository(
+      redisClient,
+      logger.child({ service: "RedisRoomsRepository" }),
+    );
     const roomsService = new RoomsService(roomsRepository);
     const controller = new RoomsController(roomsService);
 
