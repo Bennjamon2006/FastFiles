@@ -53,7 +53,7 @@ export class Composer {
       [],
     );
 
-    this.logger.log("Context created successfully.");
+    this.logger.info("Context created successfully.");
   }
 
   private loadModules(adapter: HttpAdapter<unknown>): void {
@@ -65,7 +65,7 @@ export class Composer {
         container: this.container,
       });
 
-      this.logger.log(`Module ${ModuleClass.name} registered successfully.`);
+      this.logger.info(`Module ${ModuleClass.name} registered successfully.`);
     }
   }
 

@@ -22,7 +22,7 @@ export class RedisConnectionProvider implements LifeCycle {
       });
 
       await this.client.connect();
-      this.logger.log("Connected to Redis");
+      this.logger.info("Connected to Redis");
     } catch (err) {
       this.logger.error("Failed to connect to Redis:", { error: err });
       throw err;

@@ -27,7 +27,7 @@ export default class Application {
 
     await this.server.start(port, host);
 
-    this.logger?.log(`Server started on ${host}:${port}`);
+    this.logger?.info(`Server started on ${host}:${port}`);
   }
 
   public async stop(): Promise<void> {
@@ -36,6 +36,6 @@ export default class Application {
     }
 
     await this.server.stop();
-    this.logger?.log("Server stopped.");
+    this.logger?.info("Server stopped.");
   }
 }

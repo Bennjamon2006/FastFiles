@@ -5,6 +5,8 @@ export abstract class Logger {
 
   public abstract log(message: string, metadata?: LogMetadata): void;
 
+  public abstract info(message: string, metadata?: LogMetadata): void;
+
   public abstract error(message: string, metadata?: LogMetadata): void;
 
   public abstract warn(message: string, metadata?: LogMetadata): void;
