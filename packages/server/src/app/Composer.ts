@@ -1,4 +1,3 @@
-import type { RedisClientType } from "redis";
 import redisConfig from "@/config/redis";
 import { LifeCycleManager } from "@/runtime/lifecycle";
 import { Container } from "@/runtime/dependency-injection";
@@ -9,19 +8,39 @@ import { RedisConnectionProvider } from "@/infrastructure/redis/RedisConnectionP
 import { ApplicationDependencies } from "./ApplicationDependencies";
 import { modules } from "@/modules";
 import { HttpAdapter } from "@/transport/http/server";
+import type { LoggerFactory, Logger } from "@/core/logging";
+import { ConsoleLoggerFactory } from "@/infrastructure/console/ConsoleLoggerFactory";
+
 export class Composer {
   private readonly container: Container<ApplicationDependencies>;
   private readonly lifecycleManager: LifeCycleManager;
+  private readonly loggerFactory: LoggerFactory = new ConsoleLoggerFactory();
+  private readonly logger: Logger;
   private started: boolean = false;
   private initialized: boolean = false;
 
   constructor() {
     this.container = new Container();
     this.lifecycleManager = new LifeCycleManager();
+    this.logger = this.loggerFactory.create({ module: "Composer" });
   }
 
   private createContext(): void {
-    const redisProvider = new RedisConnectionProvider(redisConfig.url);
+    // Logging
+    const loggerFactory = new ConsoleLoggerFactory();
+
+    this.container.register("loggerFactory", () => loggerFactory, []);
+
+    // Redis
+    const redisLogger = loggerFactory.create({
+      module: "Redis",
+      service: "RedisConnectionProvider",
+    });
+
+    const redisProvider = new RedisConnectionProvider(
+      redisConfig.url,
+      redisLogger,
+    );
 
     this.lifecycleManager.register(redisProvider);
 
@@ -34,7 +53,7 @@ export class Composer {
       [],
     );
 
-    console.log("Context created successfully.");
+    this.logger.log("Context created successfully.");
   }
 
   private loadModules(adapter: HttpAdapter<unknown>): void {
@@ -46,7 +65,7 @@ export class Composer {
         container: this.container,
       });
 
-      console.log(`Module ${ModuleClass.name} registered successfully.`);
+      this.logger.log(`Module ${ModuleClass.name} registered successfully.`);
     }
   }
 
@@ -55,17 +74,18 @@ export class Composer {
 
     const adapter = new ExpressAdapter();
     const server = new ExpressServer(adapter);
+    const logger = this.loggerFactory.create({ module: "Application" });
 
     this.loadModules(adapter);
 
-    app.configure(server, adapter);
+    app.configure(server, adapter, logger);
 
     this.initialized = true;
   }
 
   public async start(): Promise<void> {
     if (this.started) {
-      console.warn("Composer has already been started.");
+      this.logger.warn("Composer has already been started.");
       return;
     }
 
@@ -77,14 +97,14 @@ export class Composer {
 
       this.started = true;
     } catch (error) {
-      console.error("Failed to start composer:", error);
+      this.logger.error("Failed to start composer:", { error });
       throw error;
     }
   }
 
   public async stop(): Promise<void> {
     if (!this.started) {
-      console.warn("Composer is not started or has already been stopped.");
+      this.logger.warn("Composer is not started or has already been stopped.");
       return;
     }
 
@@ -92,7 +112,7 @@ export class Composer {
       await this.lifecycleManager.stop();
       this.started = false;
     } catch (error) {
-      console.error("Failed to stop composer:", error);
+      this.logger.error("Failed to stop composer:", { error });
     }
   }
 }

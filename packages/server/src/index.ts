@@ -24,8 +24,6 @@ async function startServer() {
     await composer.start();
     composer.compose(app);
     await app.start(port, host);
-
-    console.log(`Server is running at http://${host}:${port}`);
   } catch (error) {
     console.error("Failed to start server:", error);
     exit(1);
