@@ -72,9 +72,16 @@ export class Composer {
   public compose(app: Application): void {
     if (this.initialized) return;
 
-    const httpErrorMapper = new GlobalErrorMapper<HttpError>((error) => {
-      return new HttpError("Unknown error occurred.", 500, "UNKNOWN_ERROR");
-    });
+    const serverLogger = this.loggerFactory.create({ module: "Server" });
+
+    const httpErrorMapper = new GlobalErrorMapper<HttpError>(
+      () => {
+        return new HttpError(500, "Unknown error occurred.", "UNKNOWN_ERROR");
+      },
+      (error) => {
+        serverLogger.error("Unmapped error occurred:", { error });
+      },
+    );
 
     const adapter = new ExpressAdapter(httpErrorMapper);
     const server = new ExpressServer(adapter);
