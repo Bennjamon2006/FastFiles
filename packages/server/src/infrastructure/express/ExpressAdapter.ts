@@ -1,28 +1,16 @@
 import type {
   Request as ExpressRequest,
   Response as ExpressResponse,
-  NextFunction,
   RequestHandler,
   Application,
 } from "express";
 import express, { Router, json, urlencoded } from "express";
 
-import { Request, Response } from "@/transport/http/model";
+import { HttpError, Request, Response } from "@/transport/http/model";
 import type { RouteDefinition, Controller } from "@/transport/http/routing";
-import type { HttpAdapter } from "@/transport/http/server";
+import { HttpAdapter } from "@/transport/http/server";
 
-type ControllerDefinition = {
-  path: string;
-  controller: Controller;
-};
-
-export default class ExpressAdapter implements HttpAdapter<Application> {
-  private controllers: ControllerDefinition[] = [];
-
-  public registerController(path: string, controller: Controller): void {
-    this.controllers.push({ path, controller });
-  }
-
+export default class ExpressAdapter extends HttpAdapter<Application> {
   private parseRequest(req: ExpressRequest): Request {
     return new Request(
       req.body,
@@ -39,12 +27,16 @@ export default class ExpressAdapter implements HttpAdapter<Application> {
     res.status(response.status).set(response.headers).send(response.body);
   }
 
+  private sendError(res: ExpressResponse, error: HttpError): void {
+    res.status(error.statusCode).send({
+      error: error.message,
+      details: error.details,
+      code: error.code,
+    });
+  }
+
   private createHandler(route: RouteDefinition): RequestHandler {
-    return async (
-      req: ExpressRequest,
-      res: ExpressResponse,
-      next: NextFunction,
-    ) => {
+    return async (req: ExpressRequest, res: ExpressResponse) => {
       try {
         const request = this.parseRequest(req);
 
@@ -60,8 +52,10 @@ export default class ExpressAdapter implements HttpAdapter<Application> {
         const controllerResponse = await route.handler(request);
 
         this.sendResponse(res, controllerResponse);
-      } catch (error) {
-        next(error);
+      } catch (error: unknown) {
+        const httpError = this.errorMapper.map(error);
+
+        this.sendError(res, httpError);
       }
     };
   }
@@ -84,9 +78,9 @@ export default class ExpressAdapter implements HttpAdapter<Application> {
     app.use(json());
     app.use(urlencoded({ extended: true }));
 
-    for (const { path, controller } of this.controllers) {
+    for (const { basePath, controller } of this.controllers) {
       const controllerRouter = this.createRouter(controller);
-      app.use(path, controllerRouter);
+      app.use(basePath, controllerRouter);
     }
 
     return app;

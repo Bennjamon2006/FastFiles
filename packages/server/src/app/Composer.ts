@@ -10,6 +10,9 @@ import { modules } from "@/modules";
 import { HttpAdapter } from "@/transport/http/server";
 import type { LoggerFactory, Logger } from "@/core/logging";
 import { ConsoleLoggerFactory } from "@/infrastructure/console/ConsoleLoggerFactory";
+import { GlobalErrorMapper } from "@/core/errors";
+import { HttpError } from "@/transport/http/model";
+import { ModuleContext } from "@/modules/Module";
 
 export class Composer {
   private readonly container: Container<ApplicationDependencies>;
@@ -56,14 +59,11 @@ export class Composer {
     this.logger.info("Context created successfully.");
   }
 
-  private loadModules(adapter: HttpAdapter<unknown>): void {
+  private loadModules(context: ModuleContext): void {
     for (const ModuleClass of modules) {
       const moduleInstance = new ModuleClass();
 
-      moduleInstance.register({
-        adapter,
-        container: this.container,
-      });
+      moduleInstance.register(context);
 
       this.logger.info(`Module ${ModuleClass.name} registered successfully.`);
     }
@@ -72,11 +72,19 @@ export class Composer {
   public compose(app: Application): void {
     if (this.initialized) return;
 
-    const adapter = new ExpressAdapter();
+    const httpErrorMapper = new GlobalErrorMapper<HttpError>((error) => {
+      return new HttpError("Unknown error occurred.", 500, "UNKNOWN_ERROR");
+    });
+
+    const adapter = new ExpressAdapter(httpErrorMapper);
     const server = new ExpressServer(adapter);
     const logger = this.loggerFactory.create({ module: "Application" });
 
-    this.loadModules(adapter);
+    this.loadModules({
+      container: this.container,
+      adapter,
+      httpErrorMapper,
+    });
 
     app.configure(server, adapter, logger);
 

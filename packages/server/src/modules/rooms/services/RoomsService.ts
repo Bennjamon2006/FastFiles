@@ -1,5 +1,6 @@
 import type { Room } from "domain/models";
 import type { RoomsRepository } from "../repositories/RoomsRepository";
+import { RoomNotFound } from "../errors";
 
 export class RoomsService {
   constructor(private readonly roomsRepository: RoomsRepository) {}
@@ -37,7 +38,13 @@ export class RoomsService {
     };
   }
 
-  public async getRoomByCode(code: string): Promise<Room | null> {
-    return this.roomsRepository.getRoomByCode(code);
+  public async getRoomByCode(code: string): Promise<Room> {
+    const room = await this.roomsRepository.getRoomByCode(code);
+
+    if (!room) {
+      throw new RoomNotFound(code);
+    }
+
+    return room;
   }
 }
