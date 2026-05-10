@@ -1,9 +1,19 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import App from "./app/App.tsx";
+import { Wrapper } from "./app/Wrapper.tsx";
 
-createRoot(document.getElementById("root")!).render(
+const container = document.getElementById("root");
+
+if (!container) {
+  alert("Root container not found");
+  throw new Error("Root container not found");
+}
+
+createRoot(container).render(
   <StrictMode>
-    <App />
+    <Wrapper>
+      <App />
+    </Wrapper>
   </StrictMode>,
 );
