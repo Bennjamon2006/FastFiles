@@ -15,6 +15,7 @@ export function ColorThemeProvider({ children }: ColorThemeProviderProps) {
       | null;
 
     if (storedTheme) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setColorTheme(storedTheme);
     } else {
       const prefersDark = window.matchMedia(
@@ -23,6 +24,11 @@ export function ColorThemeProvider({ children }: ColorThemeProviderProps) {
       setColorTheme(prefersDark ? "dark" : "light");
     }
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(colorTheme);
+  }, [colorTheme]);
 
   const toggleColorTheme = () => {
     const newTheme = colorTheme === "light" ? "dark" : "light";
