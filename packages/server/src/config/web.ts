@@ -8,8 +8,6 @@ const WEB_INDEX = join(WEB_DIST, "index.html");
 
 const existsWebDist = existsSync(WEB_DIST);
 
-console.log({ WEB_DIST, WEB_INDEX, existsWebDist });
-
 const webConfig = {
   exists: existsWebDist,
   dist: WEB_DIST,

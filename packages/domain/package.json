@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "dev": "concurrently \"tsc --watch\" \"tsx-alias --watch\""
+    "dev": "concurrently --raw \"tsc --watch\" \"tsc-alias --watch > /dev/null 2>&1\""
   },
   "exports": {
     "./models": {

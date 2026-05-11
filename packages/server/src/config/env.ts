@@ -2,7 +2,7 @@ import { z } from "zod";
 import { config } from "dotenv";
 import parseValidationError from "@/helpers/parseValidationError";
 
-config();
+config({ quiet: true });
 
 const defaults = {
   PORT: 3000,
