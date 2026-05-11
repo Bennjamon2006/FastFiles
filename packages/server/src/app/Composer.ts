@@ -1,4 +1,5 @@
 import redisConfig from "@/config/redis";
+import webConfig from "@/config/web";
 import { LifeCycleManager } from "@/runtime/lifecycle";
 import { Container } from "@/runtime/dependency-injection";
 import Application from "./Application";
@@ -69,6 +70,18 @@ export class Composer {
     }
   }
 
+  private setupStaticAssets(adapter: HttpAdapter<unknown>): void {
+    if (webConfig.exists) {
+      adapter.setStaticAssets({
+        assetDir: webConfig.dist,
+        fallbackFile: webConfig.index,
+      });
+      this.logger.info(
+        `Static assets configured successfully from ${webConfig.dist}.`,
+      );
+    }
+  }
+
   public compose(app: Application): void {
     if (this.initialized) return;
 
@@ -92,6 +105,8 @@ export class Composer {
       adapter,
       httpErrorMapper,
     });
+
+    this.setupStaticAssets(adapter);
 
     app.configure(server, adapter, logger);
 

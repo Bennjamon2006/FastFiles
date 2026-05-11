@@ -73,6 +73,19 @@ export default class ExpressAdapter extends HttpAdapter<Application> {
     return router;
   }
 
+  private setupStaticAssets(app: Application): void {
+    if (this.staticAssetsOptions) {
+      const { assetDir, fallbackFile } = this.staticAssetsOptions;
+      app.use(express.static(assetDir));
+
+      if (fallbackFile) {
+        app.get("/*any", (req, res) => {
+          res.sendFile(fallbackFile, { root: assetDir });
+        });
+      }
+    }
+  }
+
   create(): Application {
     const app = express();
     app.use(json());
@@ -82,6 +95,8 @@ export default class ExpressAdapter extends HttpAdapter<Application> {
       const controllerRouter = this.createRouter(controller);
       app.use(basePath, controllerRouter);
     }
+
+    this.setupStaticAssets(app);
 
     return app;
   }
