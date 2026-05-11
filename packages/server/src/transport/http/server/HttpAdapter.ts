@@ -16,5 +16,5 @@ export abstract class HttpAdapter<T> {
     this.controllers.push({ basePath, controller });
   }
 
-  protected abstract create(): T;
+  public abstract create(): T;
 }

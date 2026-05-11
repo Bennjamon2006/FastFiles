@@ -6,9 +6,13 @@
   "author": "Benjamin Rivas <benjaminrivas500@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build --workspace domain && npm run build --workspace server",
-    "dev": "npm run dev --workspace server",
-    "start": "npm run start --workspace server",
+    "build:domain": "npm run build --workspace domain",
+    "build:app": "concurrently --names \"server,web\"r \"npm run build --workspace server\" \"npm run build --workspace web\"",
+    "build": "npm run build:domain && npm run build:app",
+    "dev:domain": "npm run dev --workspace domain",
+    "dev:app": "concurrently \"npm run dev --workspace server\" \"npm run dev --workspace web\"",
+    "dev": "concurrently --names \"domain,app\" \"npm run dev --workspace domain\" \"npm run dev:app\"",
+    "start": "concurrently \"npm run start --workspace server\" \"npm run start --workspace web\"",
     "commit": "npx cz"
   },
   "workspaces": [
@@ -16,6 +20,7 @@
   ],
   "devDependencies": {
     "commitizen": "^4.3.1",
+    "concurrently": "^9.2.1",
     "cz-conventional-changelog": "^3.3.0"
   },
   "config": {
