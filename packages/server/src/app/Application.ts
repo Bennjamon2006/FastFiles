@@ -1,5 +1,6 @@
 import { HttpServer, HttpAdapter } from "@/transport/http/server";
 import { Logger } from "@/core/logging";
+import ApplicationError from "./errors/ApplicationError";
 
 export default class Application {
   private server?: HttpServer<unknown>;
@@ -12,7 +13,10 @@ export default class Application {
     logger?: Logger,
   ): void {
     if (this.server || this.adapter) {
-      throw new Error("Application is already configured");
+      throw new ApplicationError(
+        "Application is already configured",
+        "CONFIGURATION_ERROR",
+      );
     }
 
     this.server = server;
@@ -22,7 +26,10 @@ export default class Application {
 
   public async start(port: number, host: string): Promise<void> {
     if (!this.server) {
-      throw new Error("Server not configured");
+      throw new ApplicationError(
+        "Server not configured",
+        "CONFIGURATION_ERROR",
+      );
     }
 
     await this.server.start(port, host);
@@ -32,7 +39,10 @@ export default class Application {
 
   public async stop(): Promise<void> {
     if (!this.server) {
-      throw new Error("Server not configured");
+      throw new ApplicationError(
+        "Server not configured",
+        "CONFIGURATION_ERROR",
+      );
     }
 
     await this.server.stop();
