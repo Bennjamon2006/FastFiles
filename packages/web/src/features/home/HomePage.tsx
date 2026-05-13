@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { LuFolder, LuLink, LuUpload, LuLock, LuUsers } from "react-icons/lu";
 import { ColorThemeButton } from "../../shared/ui/color-theme/ColorThemeButton";
+import CodeInput from "./components/CodeInput";
 
 const features = [
   { icon: LuLink, label: "Comparte enlace" },
@@ -21,12 +23,14 @@ const features = [
 ];
 
 export default function App() {
+  const [code, setCode] = useState("");
+
   const createRoom = () => {
     alert("Funcionalidad de creación de sala aún no implementada");
   };
 
   const joinRoom = () => {
-    alert("Funcionalidad de unión a sala aún no implementada");
+    alert(`Funcionalidad de unión a sala aún no implementada, code: ${code}`);
   };
 
   return (
@@ -102,7 +106,13 @@ export default function App() {
                   Crear Sala
                 </Button>
 
-                <Input placeholder="Código" size="lg" w={32} />
+                <CodeInput
+                  flex={1}
+                  size="lg"
+                  placeholder="Código de sala"
+                  value={code}
+                  onChange={setCode}
+                />
 
                 <Button onClick={joinRoom} size="lg" variant="outline">
                   Unirse
