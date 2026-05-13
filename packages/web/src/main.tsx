@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import {App} from "./app/App.tsx";
+import App from "./app/App.tsx";
 import { Wrapper } from "./app/Wrapper.tsx";
 
 const container = document.getElementById("root");
