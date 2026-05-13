@@ -1,19 +1,9 @@
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  Input,
-  Text,
-  VStack,
-  HStack,
-  Icon,
-} from "@chakra-ui/react";
-import { LuFolder, LuLink, LuUpload, LuLock, LuUsers } from "react-icons/lu";
+import { Box, Container, Flex, Text, VStack } from "@chakra-ui/react";
+import { LuLink, LuUpload, LuLock, LuUsers } from "react-icons/lu";
 import { ColorThemeButton } from "../../shared/ui/color-theme/ColorThemeButton";
-import CodeInput from "./components/CodeInput";
+import Hero from "./components/Hero";
+import Actions from "./components/Actions";
+import Features from "./components/Features";
 
 const features = [
   { icon: LuLink, label: "Comparte enlace" },
@@ -23,16 +13,6 @@ const features = [
 ];
 
 export default function App() {
-  const [code, setCode] = useState("");
-
-  const createRoom = () => {
-    alert("Funcionalidad de creación de sala aún no implementada");
-  };
-
-  const joinRoom = () => {
-    alert(`Funcionalidad de unión a sala aún no implementada, code: ${code}`);
-  };
-
   return (
     <Box minH="100vh" bg="bg.subtle">
       {/* Header */}
@@ -51,87 +31,13 @@ export default function App() {
       <Container maxW="lg" py={20}>
         <VStack gap={8}>
           {/* Hero */}
-          <VStack gap={4} textAlign="center">
-            <Flex
-              w={16}
-              h={16}
-              bg="accent.default"
-              borderRadius="xl"
-              align="center"
-              justify="center"
-            >
-              <Icon boxSize={8} color="black" _dark={{ color: "white" }}>
-                <LuFolder />
-              </Icon>
-            </Flex>
-
-            <Heading size="2xl">FastFile</Heading>
-            <Text color="fg.muted" fontSize="lg">
-              Comparte archivos en salas temporales. Sin registro, sin
-              complicaciones.
-            </Text>
-          </VStack>
+          <Hero />
 
           {/* Actions Card */}
-          <Box
-            w="full"
-            bg="bg.default"
-            borderRadius="xl"
-            border="1px solid"
-            borderColor="border.default"
-            p={6}
-          >
-            <VStack gap={4}>
-              {/* Name Input */}
-              <Box w="full">
-                <Text mb={2} fontWeight="medium" fontSize="sm">
-                  Tu nombre
-                </Text>
-                <Input placeholder="Ingresa tu nombre" size="lg" />
-              </Box>
-
-              {/* Buttons */}
-              <HStack w="full" gap={3}>
-                <Button
-                  onClick={createRoom}
-                  size="lg"
-                  flex={1}
-                  bg="accent.default"
-                  color="white"
-                  _dark={{
-                    color: "black",
-                  }}
-                  _hover={{ bg: "accent.hover" }}
-                >
-                  Crear Sala
-                </Button>
-
-                <CodeInput
-                  flex={1}
-                  size="lg"
-                  placeholder="Código de sala"
-                  value={code}
-                  onChange={setCode}
-                />
-
-                <Button onClick={joinRoom} size="lg" variant="outline">
-                  Unirse
-                </Button>
-              </HStack>
-            </VStack>
-          </Box>
+          <Actions />
 
           {/* Features */}
-          <Flex gap={6} flexWrap="wrap" justify="center">
-            {features.map((feature, index) => (
-              <HStack key={index} gap={2} color="fg.muted" fontSize="sm">
-                <Icon>
-                  <feature.icon />
-                </Icon>
-                <Text>{feature.label}</Text>
-              </HStack>
-            ))}
-          </Flex>
+          <Features features={features} />
 
           <Text color="fg.muted" fontSize="xs">
             Los archivos desaparecen cuando la sala se cierra
