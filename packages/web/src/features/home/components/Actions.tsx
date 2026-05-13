@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, VStack, Input, HStack, Button, Text } from "@chakra-ui/react";
 import CodeInput from "./CodeInput";
 
