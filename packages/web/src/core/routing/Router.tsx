@@ -6,7 +6,7 @@ type RouterProps = {
   routes: RouteDefinition[];
 };
 
-export default function Router({ routes }: RouterProps) {
+export function Router({ routes }: RouterProps) {
   return (
     <BrowserRouter>
       <Suspense fallback={<div>Cargando...</div>}>

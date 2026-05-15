@@ -1,4 +1,4 @@
-import { UIProvider } from "../shared/ui/UIProvider";
+import { UIProvider } from "@/shared/ui/UIProvider";
 
 interface WrapperProps {
   children: React.ReactNode;

@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { ColorThemeButton } from "../color-theme";
+import { ColorThemeButton } from "@/shared/ui/color-theme";
 
 export function Header() {
   return (

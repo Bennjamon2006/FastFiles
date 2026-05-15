@@ -1,6 +1,6 @@
 import { VStack, Flex, Heading, Text } from "@chakra-ui/react";
 import { LuFolder } from "react-icons/lu";
-import { Icon } from "../../../shared/ui/components";
+import { Icon } from "@/shared/ui/components";
 
 export default function Hero() {
   return (

@@ -1,5 +1,5 @@
 import { Flex, HStack, Text } from "@chakra-ui/react";
-import { Icon } from "../../../shared/ui/components";
+import { Icon } from "@/shared/ui/components";
 
 export interface Feature {
   icon: React.ElementType;

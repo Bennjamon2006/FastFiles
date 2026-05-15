@@ -3,8 +3,7 @@ import { LuLink, LuUpload, LuLock, LuUsers } from "react-icons/lu";
 import Hero from "./components/Hero";
 import Actions from "./components/Actions";
 import Features from "./components/Features";
-import { PageContainer } from "../../shared/ui/components/PageContainer";
-import { Header } from "../../shared/ui/components";
+import { Header, PageContainer } from "@/shared/ui/components";
 
 const features = [
   { icon: LuLink, label: "Comparte enlace" },
