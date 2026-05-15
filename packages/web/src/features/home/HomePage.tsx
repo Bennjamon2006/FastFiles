@@ -1,9 +1,10 @@
-import { Box, Container, Flex, Text, VStack } from "@chakra-ui/react";
+import { Container, Text, VStack } from "@chakra-ui/react";
 import { LuLink, LuUpload, LuLock, LuUsers } from "react-icons/lu";
-import { ColorThemeButton } from "../../shared/ui/color-theme/ColorThemeButton";
 import Hero from "./components/Hero";
 import Actions from "./components/Actions";
 import Features from "./components/Features";
+import { PageContainer } from "../../shared/ui/components/PageContainer";
+import { Header } from "../../shared/ui/components";
 
 const features = [
   { icon: LuLink, label: "Comparte enlace" },
@@ -12,21 +13,11 @@ const features = [
   { icon: LuUsers, label: "Salas compartidas" },
 ];
 
-export default function App() {
+export default function HomePage() {
   return (
-    <Box minH="100vh" bg="bg.subtle">
+    <PageContainer>
       {/* Header */}
-      <Flex
-        as="header"
-        justify="flex-end"
-        p={4}
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-      >
-        <ColorThemeButton />
-      </Flex>
+      <Header />
 
       <Container maxW="lg" py={20}>
         <VStack gap={8}>
@@ -44,6 +35,6 @@ export default function App() {
           </Text>
         </VStack>
       </Container>
-    </Box>
+    </PageContainer>
   );
 }

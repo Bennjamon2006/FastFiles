@@ -1,5 +1,6 @@
-import { VStack, Flex, Icon, Heading, Text } from "@chakra-ui/react";
+import { VStack, Flex, Heading, Text } from "@chakra-ui/react";
 import { LuFolder } from "react-icons/lu";
+import { Icon } from "../../../shared/ui/components";
 
 export default function Hero() {
   return (
@@ -12,7 +13,7 @@ export default function Hero() {
         align="center"
         justify="center"
       >
-        <Icon boxSize={8} color="black" _dark={{ color: "white" }}>
+        <Icon>
           <LuFolder />
         </Icon>
       </Flex>

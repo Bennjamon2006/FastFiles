@@ -1,4 +1,5 @@
-import { Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Flex, HStack, Text } from "@chakra-ui/react";
+import { Icon } from "../../../shared/ui/components";
 
 export interface Feature {
   icon: React.ElementType;
@@ -14,7 +15,7 @@ export default function Features({ features }: FeaturesProps) {
     <Flex gap={6} flexWrap="wrap" justify="center">
       {features.map((feature, index) => (
         <HStack key={index} gap={2} color="fg.muted" fontSize="sm">
-          <Icon>
+          <Icon boxSize={5}>
             <feature.icon />
           </Icon>
           <Text>{feature.label}</Text>
