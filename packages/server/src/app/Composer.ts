@@ -96,7 +96,7 @@ export class Composer {
       },
     );
 
-    const adapter = new ExpressAdapter(httpErrorMapper);
+    const adapter = new ExpressAdapter(httpErrorMapper, serverLogger);
     const server = new ExpressServer(adapter);
     const logger = this.loggerFactory.create({ module: "Application" });
 

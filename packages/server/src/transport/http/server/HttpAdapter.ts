@@ -1,6 +1,7 @@
 import type { Controller } from "@/transport/http/routing";
 import type { HttpError } from "@/transport/http/model";
 import { GlobalErrorMapper } from "@/core/errors";
+import { Logger } from "@/core/logging";
 
 type StatiServecOptions = {
   assetDir: string;
@@ -13,10 +14,13 @@ type ControllerDefinition = {
 };
 
 export abstract class HttpAdapter<T> {
-  protected controllers: ControllerDefinition[] = [];
+  protected readonly controllers: ControllerDefinition[] = [];
   protected staticAssetsOptions?: StatiServecOptions;
 
-  constructor(protected errorMapper: GlobalErrorMapper<HttpError>) {}
+  constructor(
+    protected readonly errorMapper: GlobalErrorMapper<HttpError>,
+    protected readonly logger: Logger,
+  ) {}
 
   registerController(basePath: string, controller: Controller) {
     this.controllers.push({ basePath, controller });

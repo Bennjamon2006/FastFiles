@@ -11,10 +11,6 @@ export class ConsoleLogger extends Logger {
     debug: chalk.gray.bold("[DEBUG]"),
   };
 
-  constructor(context: LoggerContext) {
-    super(context);
-  }
-
   private getPrefix(type: keyof typeof this.HEADERS): string {
     const header = this.HEADERS[type];
     let modulePart = chalk.cyan(`[${this.context.module}]`);

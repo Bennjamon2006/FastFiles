@@ -38,9 +38,9 @@ export class RedisConnectionProvider implements LifeCycle {
       await this.client.quit();
       this.client = null;
 
-      console.log("Disconnected from Redis");
-    } catch (err) {
-      console.error("Failed to disconnect from Redis:", err);
+      this.logger.info("Disconnected from Redis");
+    } catch (error) {
+      this.logger.error("Failed to disconnect from Redis:", { error });
     }
   }
 

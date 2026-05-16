@@ -1,6 +1,4 @@
-import type { Middleware } from ".";
-import type { HttpHandler } from ".";
-import type { HttpMethod, RouteDefinition } from ".";
+import type { Middleware, HttpHandler, HttpMethod, RouteDefinition } from ".";
 
 type Params = [...Middleware[], HttpHandler];
 
@@ -47,5 +45,9 @@ export abstract class Controller {
 
   public getRoutes() {
     return this.routes;
+  }
+
+  public get name() {
+    return this.constructor.name;
   }
 }

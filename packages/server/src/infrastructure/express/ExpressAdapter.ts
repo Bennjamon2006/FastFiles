@@ -60,14 +60,19 @@ export default class ExpressAdapter extends HttpAdapter<Application> {
     };
   }
 
-  private createRouter(controller: Controller): Router {
+  private createRouter(controller: Controller, basePath: string): Router {
     const router = Router();
     const routes = controller.getRoutes();
+    const controllerLogger = this.logger.child({ service: controller.name });
 
     for (const route of routes) {
       const handler = this.createHandler(route);
 
       router[route.method](route.path, handler);
+
+      controllerLogger.info(
+        `Registered route: [${route.method.toUpperCase()}] ${basePath}${route.path}`,
+      );
     }
 
     return router;
@@ -92,7 +97,7 @@ export default class ExpressAdapter extends HttpAdapter<Application> {
     app.use(urlencoded({ extended: true }));
 
     for (const { basePath, controller } of this.controllers) {
-      const controllerRouter = this.createRouter(controller);
+      const controllerRouter = this.createRouter(controller, basePath);
       app.use(basePath, controllerRouter);
     }
 

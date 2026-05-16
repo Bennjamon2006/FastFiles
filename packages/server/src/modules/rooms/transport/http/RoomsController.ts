@@ -23,12 +23,6 @@ export class RoomsController extends Controller {
     const { code } = request.params as { code: string };
     const room = await this.roomsService.getRoomByCode(code);
 
-    if (!room) {
-      return new Response(404, {
-        error: "Room not found",
-      });
-    }
-
     return Response.ok({
       room,
     });
