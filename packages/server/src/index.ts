@@ -22,7 +22,7 @@ async function startServer() {
     const { port, host } = serverConfig;
 
     await composer.start();
-    composer.compose(app);
+    await composer.compose(app);
     await app.start(port, host);
   } catch (error) {
     console.error("Failed to start server:", error);

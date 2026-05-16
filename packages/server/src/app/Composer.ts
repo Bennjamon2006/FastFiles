@@ -14,6 +14,7 @@ import { ConsoleLoggerFactory } from "@/infrastructure/console/ConsoleLoggerFact
 import { GlobalErrorMapper } from "@/core/errors";
 import { HttpError } from "@/transport/http/model";
 import { ModuleContext } from "@/modules/Module";
+import { ModuleRegistry } from "@/modules/ModuleRegistry";
 
 export class Composer {
   private readonly container: Container<ApplicationDependencies>;
@@ -60,13 +61,17 @@ export class Composer {
     this.logger.info("Context created successfully.");
   }
 
-  private loadModules(context: ModuleContext): void {
+  private async loadModules(context: ModuleContext): Promise<void> {
     for (const ModuleClass of modules) {
       const moduleInstance = new ModuleClass();
 
-      moduleInstance.register(context);
+      const exports = await moduleInstance.register(context);
 
-      this.logger.info(`Module ${ModuleClass.name} registered successfully.`);
+      context.moduleRegistry.register(moduleInstance.name, exports);
+
+      this.logger.info(
+        `Module ${moduleInstance.name} registered successfully.`,
+      );
     }
   }
 
@@ -82,7 +87,7 @@ export class Composer {
     }
   }
 
-  public compose(app: Application): void {
+  public async compose(app: Application): Promise<void> {
     if (this.initialized) return;
 
     const serverLogger = this.loggerFactory.create({ module: "Server" });
@@ -100,10 +105,11 @@ export class Composer {
     const server = new ExpressServer(adapter);
     const logger = this.loggerFactory.create({ module: "Application" });
 
-    this.loadModules({
+    await this.loadModules({
       container: this.container,
       adapter,
       httpErrorMapper,
+      moduleRegistry: new ModuleRegistry(),
     });
 
     this.setupStaticAssets(adapter);

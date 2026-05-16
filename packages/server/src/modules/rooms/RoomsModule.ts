@@ -4,8 +4,19 @@ import { RoomsService } from "./services/RoomsService";
 import { RedisRoomsRepository } from "./infrastructure/redis/RedisRoomsRepository";
 import { HttpRoomsErrorMapper } from "./transport/http/HttpRoomsErrorMapper";
 
-export default class RoomsModule implements Module {
-  public register(context: ModuleContext) {
+type RoomsModuleExports = {
+  roomsService: RoomsService;
+};
+
+export default class RoomsModule implements Module<
+  "rooms",
+  RoomsModuleExports
+> {
+  get name() {
+    return "rooms" as const;
+  }
+
+  public register(context: ModuleContext): RoomsModuleExports {
     const redisClient = context.container.get("redisClient");
     const loggerFactory = context.container.get("loggerFactory");
     const logger = loggerFactory.create({
@@ -24,5 +35,7 @@ export default class RoomsModule implements Module {
     const roomsErrorMapper = new HttpRoomsErrorMapper();
 
     context.httpErrorMapper.registerMapper(roomsErrorMapper);
+
+    return { roomsService };
   }
 }
