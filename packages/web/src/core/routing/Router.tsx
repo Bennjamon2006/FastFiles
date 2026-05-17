@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import type { RouteDefinition } from "./RouteDefinition";
+import { LoadingPage } from "@/shared/ui/loading";
 
 type RouterProps = {
   routes: RouteDefinition[];
@@ -9,7 +10,7 @@ type RouterProps = {
 export function Router({ routes }: RouterProps) {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Cargando...</div>}>
+      <Suspense fallback={<LoadingPage />}>
         <Routes>
           {routes.map((route) => (
             <Route
