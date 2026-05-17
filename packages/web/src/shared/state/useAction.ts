@@ -30,7 +30,7 @@ type ActionState<T> =
   | SuccessAction<T>
   | ErrorAction;
 
-type ActionResult<T> = ActionState<T> & {
+export type ActionResult<T> = ActionState<T> & {
   execute: () => Promise<void>;
 };
 
@@ -42,7 +42,7 @@ const wrapError = (error: unknown): Error => {
   return new Error(String(error));
 };
 
-export default function useAction<T>(action: () => Promise<T>) {
+export function useAction<T>(action: () => Promise<T>) {
   const [state, setState] = useState<ActionState<T>>({
     type: "idle",
     result: null,

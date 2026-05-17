@@ -4,6 +4,7 @@ import CodeInput from "./CodeInput";
 
 export default function Actions() {
   const [code, setCode] = useState("");
+  const [name, setName] = useState("");
 
   const createRoom = () => {
     alert("Funcionalidad de creación de sala aún no implementada");
@@ -27,7 +28,12 @@ export default function Actions() {
           <Text mb={2} fontWeight="medium" fontSize="sm">
             Tu nombre
           </Text>
-          <Input placeholder="Ingresa tu nombre" size="lg" />
+          <Input
+            placeholder="Ingresa tu nombre"
+            size="lg"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </Box>
 
         {/* Buttons */}
